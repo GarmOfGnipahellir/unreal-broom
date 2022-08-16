@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "UnrealBroom",
+	"Description": "TrenchBroom like editing in Unreal.",
+	"Category": "Other",
+	"CreatedBy": "Henrik Melsom",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "UnrealBroom",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
