@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "InteractiveTool.h"
 #include "InteractiveToolBuilder.h"
+#include "UnrealBroomActor.h"
 #include "BaseTools/ClickDragTool.h"
+#include "DefaultTool.generated.h"
 
 UCLASS()
 class UNREALBROOM_API UDefaultToolBuilder : public UInteractiveToolBuilder
@@ -33,23 +35,29 @@ class UNREALBROOM_API UDefaultTool : public UInteractiveTool, public IClickDragB
 	GENERATED_BODY()
 
 public:
-	UDefaultTool();
-
 	virtual void Setup() override;
 	virtual void OnUpdateModifierState(int ModifierID, bool bIsOn) override;
 
-	void SetWorld(UWorld* NewWorld);
+	virtual FInputRayHit CanBeginClickDragSequence(const FInputDeviceRay& PressPos) override;
+	virtual void OnClickPress(const FInputDeviceRay& PressPos) override;
+	virtual void OnClickDrag(const FInputDeviceRay& DragPos) override;
+	virtual void OnClickRelease(const FInputDeviceRay& ReleasePos) override;
+	virtual void OnTerminateDragSequence() override;
+	
+	virtual void Render(IToolsContextRenderAPI* RenderAPI) override;
+
+	void SetTarget(AUnrealBroomActor* NewTarget);
 
 protected:
 	UPROPERTY()
 	TObjectPtr<UDefaultToolProperties> Properties;
 
 	UPROPERTY()
-	UWorld* World;
+	AUnrealBroomActor* Target;
 
-	static const int ShiftModifierID = 1;
-	static const int CtrlModifierID = 2;
-	static const int AltModifierID = 3;
+	static constexpr int ShiftModifierID = 1;
+	static constexpr int CtrlModifierID = 2;
+	static constexpr int AltModifierID = 3;
 
 	bool bShiftDown = false;
 	bool bCtrlDown = false;

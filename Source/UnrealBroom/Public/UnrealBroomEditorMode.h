@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EditorModeManager.h"
 #include "Tools/UEdMode.h"
 #include "UnrealBroomEditorMode.generated.h"
 
@@ -24,9 +25,17 @@ public:
 
 	static FString SimpleToolName;
 	static FString InteractiveToolName;
+	static FString DefaultToolName;
+
+	static UUnrealBroomEditorMode* Get()
+	{
+		return Cast<UUnrealBroomEditorMode>(
+			GLevelEditorModeTools().GetActiveScriptableMode(EM_UnrealBroomEditorModeId)
+		);
+	}
 
 	UUnrealBroomEditorMode();
-	virtual ~UUnrealBroomEditorMode();
+	virtual ~UUnrealBroomEditorMode() override;
 
 	/** UEdMode interface */
 	virtual void Enter() override;

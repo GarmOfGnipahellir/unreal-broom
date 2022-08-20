@@ -3,18 +3,19 @@
 
 #include "DefaultTool.h"
 
+#include "EngineUtils.h"
 #include "InteractiveToolManager.h"
+#include "UnrealBroomGlobals.h"
 #include "BaseBehaviors/ClickDragBehavior.h"
+#include "Model/Brush.h"
+#include "Model/Face.h"
+#include "Model/Poly.h"
 
 UInteractiveTool* UDefaultToolBuilder::BuildTool(const FToolBuilderState& SceneState) const
 {
 	UDefaultTool* NewTool = NewObject<UDefaultTool>(SceneState.ToolManager);
-	NewTool->SetWorld(SceneState.World);
+	NewTool->SetTarget(UUnrealBroomGlobals::GetOrCreateWorldData(SceneState.World));
 	return NewTool;
-}
-
-UDefaultTool::UDefaultTool()
-{
 }
 
 void UDefaultTool::Setup()
@@ -49,7 +50,66 @@ void UDefaultTool::OnUpdateModifierState(const int ModifierID, const bool bIsOn)
 	}
 }
 
-void UDefaultTool::SetWorld(UWorld* NewWorld)
+FInputRayHit UDefaultTool::CanBeginClickDragSequence(const FInputDeviceRay& PressPos)
 {
-	World = NewWorld;
+	return FInputRayHit();
+}
+
+void UDefaultTool::OnClickPress(const FInputDeviceRay& PressPos)
+{
+}
+
+void UDefaultTool::OnClickDrag(const FInputDeviceRay& DragPos)
+{
+}
+
+void UDefaultTool::OnClickRelease(const FInputDeviceRay& ReleasePos)
+{
+}
+
+void UDefaultTool::OnTerminateDragSequence()
+{
+}
+
+void UDefaultTool::Render(IToolsContextRenderAPI* RenderAPI)
+{
+	FPrimitiveDrawInterface* PDI = RenderAPI->GetPrimitiveDrawInterface();
+	for (const auto Brush : Target->Entity.Brushes)
+	{
+		for (const auto Face : Brush->Faces)
+		{
+			PDI->DrawPoint(Face->Location, FLinearColor::White, 16.0f, SDPG_World);
+			PDI->DrawLine(
+				Face->Location,
+				Face->Location + Face->Normal * 50.0f,
+				FLinearColor::White,
+				SDPG_World
+			);
+		}
+
+		for (const auto Poly : Brush->GetPolys())
+		{
+			TOptional<TArray<FPoly::FVert>> Verts = Poly.GetOrderedVerts();
+			if (!Verts) continue;
+
+			for (int i = 1; i < Verts->Num(); ++i)
+			{
+				FPoly::FVert Vert0 = (*Verts)[i - 1];
+				FPoly::FVert Vert1 = (*Verts)[i];
+
+				PDI->DrawPoint(Vert0.Location, FLinearColor::White, 16.0f, SDPG_World);
+				PDI->DrawLine(
+					Vert0.Location,
+					Vert1.Location,
+					FLinearColor::White,
+					SDPG_World
+				);
+			}
+		}
+	}
+}
+
+void UDefaultTool::SetTarget(AUnrealBroomActor* NewTarget)
+{
+	Target = NewTarget;
 }

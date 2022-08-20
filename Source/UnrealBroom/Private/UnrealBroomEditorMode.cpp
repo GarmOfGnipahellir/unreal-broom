@@ -1,13 +1,13 @@
 // Copyright Henrik Melsom. All Rights Reserved.
 
 #include "UnrealBroomEditorMode.h"
+
+#include "EditorModeManager.h"
 #include "UnrealBroomToolkit.h"
 #include "EdModeInteractiveToolsContext.h"
 #include "InteractiveToolManager.h"
 #include "UnrealBroomCommands.h"
-
-#include "Tools/UnrealBroomSimpleTool.h"
-#include "Tools/UnrealBroomInteractiveTool.h"
+#include "Tools/DefaultTool.h"
 
 
 #define LOCTEXT_NAMESPACE "UnrealBroomEditorMode"
@@ -16,7 +16,7 @@ const FEditorModeID UUnrealBroomEditorMode::EM_UnrealBroomEditorModeId = TEXT("E
 
 FString UUnrealBroomEditorMode::SimpleToolName = TEXT("UnrealBroom_ActorInfoTool");
 FString UUnrealBroomEditorMode::InteractiveToolName = TEXT("UnrealBroom_MeasureDistanceTool");
-
+FString UUnrealBroomEditorMode::DefaultToolName = TEXT("UnrealBroom_DefaultTool");
 
 UUnrealBroomEditorMode::UUnrealBroomEditorMode()
 {
@@ -24,7 +24,7 @@ UUnrealBroomEditorMode::UUnrealBroomEditorMode()
 
 	// appearance and icon in the editing mode ribbon can be customized here
 	Info = FEditorModeInfo(
-		UUnrealBroomEditorMode::EM_UnrealBroomEditorModeId,
+		EM_UnrealBroomEditorModeId,
 		LOCTEXT("ModeName", "UnrealBroom"),
 		FSlateIcon(),
 		true
@@ -46,16 +46,15 @@ void UUnrealBroomEditorMode::Enter()
 	UEdMode::Enter();
 
 	const FUnrealBroomCommands& SampleToolCommands = FUnrealBroomCommands::Get();
-
-	RegisterTool(SampleToolCommands.SimpleTool, SimpleToolName, NewObject<UUnrealBroomSimpleToolBuilder>(this));
 	RegisterTool(
-		SampleToolCommands.InteractiveTool,
-		InteractiveToolName,
-		NewObject<UUnrealBroomInteractiveToolBuilder>(this)
+		SampleToolCommands.DefaultTool,
+		DefaultToolName,
+		NewObject<UDefaultToolBuilder>(this)
 	);
 
 	// active tool type is not relevant here, we just set to default
-	GetToolManager()->SelectActiveToolType(EToolSide::Left, SimpleToolName);
+	GetToolManager()->SelectActiveToolType(EToolSide::Left, DefaultToolName);
+	GetToolManager()->ActivateTool(EToolSide::Left);
 }
 
 void UUnrealBroomEditorMode::CreateToolkit()

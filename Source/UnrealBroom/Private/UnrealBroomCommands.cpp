@@ -22,9 +22,9 @@ void FUnrealBroomCommands::RegisterCommands()
 
 	UI_COMMAND(
 		DefaultTool,
-		"Show Actor Info",
-		"Opens message box with info about a clicked actor",
-		EUserInterfaceActionType::Button,
+		"Default",
+		"",
+		EUserInterfaceActionType::RadioButton,
 		FInputChord()
 	);
 	ToolCommands.Add(DefaultTool);
