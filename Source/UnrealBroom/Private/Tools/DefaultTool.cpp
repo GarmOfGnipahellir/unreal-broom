@@ -89,13 +89,10 @@ void UDefaultTool::Render(IToolsContextRenderAPI* RenderAPI)
 
 		for (const auto Poly : Brush->GetPolys())
 		{
-			TOptional<TArray<FPoly::FVert>> Verts = Poly.GetOrderedVerts();
-			if (!Verts) continue;
-
-			for (int i = 1; i < Verts->Num(); ++i)
+			for (int i = 1; i < Poly.Verts.Num(); ++i)
 			{
-				FPoly::FVert Vert0 = (*Verts)[i - 1];
-				FPoly::FVert Vert1 = (*Verts)[i];
+				FPoly::FVert Vert0 = Poly.Verts[i - 1];
+				FPoly::FVert Vert1 = Poly.Verts[i];
 
 				PDI->DrawPoint(Vert0.Location, FLinearColor::White, 16.0f, SDPG_World);
 				PDI->DrawLine(

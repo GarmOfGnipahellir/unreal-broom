@@ -3,7 +3,8 @@
 
 #include "Model/Brush.h"
 
-#include "MatrixTypes.h"
+#include "UnrealBroomModule.h"
+#include "DynamicMesh/DynamicMesh3.h"
 #include "Model/Face.h"
 #include "Model/Poly.h"
 
@@ -53,6 +54,11 @@ TArray<FPoly> FBrush::GetPolys()
 				Result[k].CreateVert(*Point, *Faces[k]);
 			}
 		}
+	}
+
+	for (int i = 0; i < Result.Num(); ++i)
+	{
+		Result[i].OrderVerts();
 	}
 
 	return Result;

@@ -3,20 +3,22 @@
 
 #include "Model/Poly.h"
 
+#include "DynamicMesh/DynamicMesh3.h"
 #include "Model/Face.h"
 
 void FPoly::CreateVert(const FVector Location, const FFace Face)
 {
 	FVert Vert;
 	Vert.Location = Location;
+	Vert.Normal = Face.Normal;
 	Verts.Add(Vert);
 }
 
-TOptional<TArray<FPoly::FVert>> FPoly::GetOrderedVerts() const
+void FPoly::OrderVerts()
 {
 	if (Verts.Num() < 3)
 	{
-		return TOptional<TArray<FVert>>();
+		return;
 	}
 
 	FVector Center = FVector::ZeroVector;
@@ -26,24 +28,23 @@ TOptional<TArray<FPoly::FVert>> FPoly::GetOrderedVerts() const
 	}
 	Center /= Verts.Num();
 
-	TArray<FVert> Result = Verts;
-	for (int n = 0; n < Result.Num() - 2; ++n)
+	for (int n = 0; n < Verts.Num() - 2; ++n)
 	{
-		FVector a = Result[n].Location - Center;
+		FVector a = Verts[n].Location - Center;
 		a.Normalize();
 		FVector p = Normal.Cross(a);
 
 		double SmallestAngle = -1.0;
 		int Smallest = -1;
 
-		for (int m = n + 1; m < Result.Num(); ++m)
+		for (int m = n + 1; m < Verts.Num(); ++m)
 		{
-			FVector b = Result[m].Location - Center;
+			FVector b = Verts[m].Location - Center;
 			b.Normalize();
 
 			if (p.Dot(b) > 0.0)
 			{
-				double Angle = a.Dot(b);
+				const double Angle = a.Dot(b);
 				if (Angle > SmallestAngle)
 				{
 					SmallestAngle = Angle;
@@ -52,8 +53,6 @@ TOptional<TArray<FPoly::FVert>> FPoly::GetOrderedVerts() const
 			}
 		}
 
-		Result.Swap(n + 1, Smallest);
+		Verts.Swap(n + 1, Smallest);
 	}
-
-	return TOptional(Result);
 }

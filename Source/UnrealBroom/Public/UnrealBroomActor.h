@@ -7,6 +7,8 @@
 #include "Model/Entity.h"
 #include "UnrealBroomActor.generated.h"
 
+class UDynamicMeshComponent;
+
 UCLASS()
 class UNREALBROOM_API AUnrealBroomActor : public AActor
 {
@@ -14,6 +16,9 @@ class UNREALBROOM_API AUnrealBroomActor : public AActor
 
 public:
 	FEntity Entity;
+
+	UPROPERTY(Category=UnrealBroomActor, VisibleAnywhere, BlueprintReadOnly)
+	UDynamicMeshComponent* DynamicMeshComponent;
 
 	AUnrealBroomActor();
 

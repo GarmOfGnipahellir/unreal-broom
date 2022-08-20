@@ -25,5 +25,5 @@ public:
 
 	void CreateVert(const FVector Location, const FFace Face);
 
-	TOptional<TArray<FVert>> GetOrderedVerts() const;
+	void OrderVerts();
 };
