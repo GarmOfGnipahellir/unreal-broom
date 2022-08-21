@@ -7,6 +7,7 @@
 #include "EdModeInteractiveToolsContext.h"
 #include "InteractiveToolManager.h"
 #include "UnrealBroomCommands.h"
+#include "UnrealBroomGlobals.h"
 #include "Tools/DefaultTool.h"
 
 
@@ -44,6 +45,8 @@ void UUnrealBroomEditorMode::ActorSelectionChangeNotify()
 void UUnrealBroomEditorMode::Enter()
 {
 	UEdMode::Enter();
+
+	Client = MakeShareable(new FUnrealBroomClient(UUnrealBroomGlobals::GetOrCreateWorldData(GetWorld())));
 
 	const FUnrealBroomCommands& SampleToolCommands = FUnrealBroomCommands::Get();
 	RegisterTool(

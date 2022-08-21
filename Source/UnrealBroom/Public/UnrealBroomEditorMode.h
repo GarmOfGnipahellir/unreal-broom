@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EditorModeManager.h"
+#include "UnrealBroomClient.h"
 #include "Tools/UEdMode.h"
 #include "UnrealBroomEditorMode.generated.h"
 
@@ -33,6 +34,8 @@ public:
 			GLevelEditorModeTools().GetActiveScriptableMode(EM_UnrealBroomEditorModeId)
 		);
 	}
+
+	TSharedPtr<FUnrealBroomClient> Client;
 
 	UUnrealBroomEditorMode();
 	virtual ~UUnrealBroomEditorMode() override;
