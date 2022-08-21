@@ -3,11 +3,10 @@
 
 #include "UnrealBroomGlobals.h"
 
-#include "DynamicMeshActor.h"
 #include "EngineUtils.h"
 #include "UnrealBroomActor.h"
 #include "Components/DynamicMeshComponent.h"
-#include "Model/Brush.h"
+#include "Model/UnrealBroomBrush.h"
 
 AUnrealBroomActor* UUnrealBroomGlobals::GetWorldData(const UWorld* World)
 {
@@ -25,7 +24,7 @@ AUnrealBroomActor* UUnrealBroomGlobals::GetOrCreateWorldData(UWorld* World)
 		return Actor;
 	}
 	AUnrealBroomActor* Actor = World->SpawnActor<AUnrealBroomActor>();
-	Actor->Entity.Brushes.Add(MakeShareable(FBrush::CreateBox(FVector::ZeroVector, FVector::OneVector * 100.0)));
-	Actor->DynamicMeshComponent->SetMesh(Actor->Entity.GetDynamicMesh());
+	Actor->Entity->Brushes.Add(UUnrealBroomBrush::CreateBox(FVector::ZeroVector, FVector::OneVector * 100.0));
+	Actor->DynamicMeshComponent->SetMesh(Actor->Entity->GetDynamicMesh());
 	return Actor;
 }

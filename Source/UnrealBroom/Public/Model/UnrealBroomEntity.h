@@ -3,18 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UnrealBroomEntity.generated.h"
 
 namespace UE::Geometry
 {
 	class FDynamicMesh3;
 }
 
-class FBrush;
+class UUnrealBroomBrush;
 
-class FEntity
+UCLASS()
+class UUnrealBroomEntity : public UObject
 {
+	GENERATED_BODY()
+
 public:
-	TArray<TSharedRef<FBrush>> Brushes;
+	UPROPERTY()
+	TArray<UUnrealBroomBrush*> Brushes;
 
 	/**
 	 * @brief Computes a triangulated dynamic mesh from brush faces.

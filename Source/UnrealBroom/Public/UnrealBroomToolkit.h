@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SUnrealBroomEdModeWidget.h"
 #include "Toolkits/BaseToolkit.h"
-#include "UnrealBroomEditorMode.h"
 
 /**
  * This FModeToolkit just creates a basic UI panel that allows various InteractiveTools to
@@ -22,4 +22,9 @@ public:
 	/** IToolkit interface */
 	virtual FName GetToolkitFName() const override;
 	virtual FText GetBaseToolkitName() const override;
+	virtual FEdMode* GetEditorMode() const override;
+	virtual TSharedPtr<SWidget> GetInlineContent() const override;
+
+protected:
+	TSharedPtr<SUnrealBroomEdModeWidget> UnrealBroomEdModeWidget;
 };

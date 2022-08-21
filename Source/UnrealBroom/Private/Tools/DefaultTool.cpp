@@ -7,9 +7,9 @@
 #include "InteractiveToolManager.h"
 #include "UnrealBroomGlobals.h"
 #include "BaseBehaviors/ClickDragBehavior.h"
-#include "Model/Brush.h"
-#include "Model/Face.h"
-#include "Model/Poly.h"
+#include "Model/UnrealBroomBrush.h"
+#include "Model/UnrealBroomFace.h"
+#include "Model/UnrealBroomPoly.h"
 
 UInteractiveTool* UDefaultToolBuilder::BuildTool(const FToolBuilderState& SceneState) const
 {
@@ -74,7 +74,7 @@ void UDefaultTool::OnTerminateDragSequence()
 void UDefaultTool::Render(IToolsContextRenderAPI* RenderAPI)
 {
 	FPrimitiveDrawInterface* PDI = RenderAPI->GetPrimitiveDrawInterface();
-	for (const auto Brush : Target->Entity.Brushes)
+	for (const auto Brush : Target->Entity->Brushes)
 	{
 		for (const auto Face : Brush->Faces)
 		{
@@ -91,8 +91,8 @@ void UDefaultTool::Render(IToolsContextRenderAPI* RenderAPI)
 		{
 			for (int i = 1; i < Poly.Verts.Num(); ++i)
 			{
-				FPoly::FVert Vert0 = Poly.Verts[i - 1];
-				FPoly::FVert Vert1 = Poly.Verts[i];
+				FUnrealBroomVert Vert0 = Poly.Verts[i - 1];
+				FUnrealBroomVert Vert1 = Poly.Verts[i];
 
 				PDI->DrawPoint(Vert0.Location, FLinearColor::White, 16.0f, SDPG_World);
 				PDI->DrawLine(

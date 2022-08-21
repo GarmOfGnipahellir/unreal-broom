@@ -1,22 +1,22 @@
 ﻿// Copyright Arctic Beard Studios. All Rights Reserved.
 
 
-#include "Model/Entity.h"
+#include "Model/UnrealBroomEntity.h"
 
 #include "DynamicMesh/DynamicMesh3.h"
-#include "Model/Brush.h"
-#include "Model/Poly.h"
+#include "Model/UnrealBroomBrush.h"
+#include "Model/UnrealBroomPoly.h"
 
-UE::Geometry::FDynamicMesh3 FEntity::GetDynamicMesh()
+UE::Geometry::FDynamicMesh3 UUnrealBroomEntity::GetDynamicMesh()
 {
 	UE::Geometry::FDynamicMesh3 Result = UE::Geometry::FDynamicMesh3(true, false, false, false);
 
 	for (int i = 0; i < Brushes.Num(); ++i)
 	{
-		TArray<FPoly> Polys = Brushes[i]->GetPolys();
+		TArray<FUnrealBroomPoly> Polys = Brushes[i]->GetPolys();
 		for (int j = 0; j < Polys.Num(); ++j)
 		{
-			FPoly Poly = Polys[j];
+			FUnrealBroomPoly Poly = Polys[j];
 
 			TArray<int> VertIDs;
 			VertIDs.Reserve(Poly.Verts.Num());

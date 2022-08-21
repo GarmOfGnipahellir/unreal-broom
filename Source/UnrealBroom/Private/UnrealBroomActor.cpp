@@ -10,6 +10,8 @@ AUnrealBroomActor::AUnrealBroomActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	Entity = NewObject<UUnrealBroomEntity>();
+
 	DynamicMeshComponent = CreateDefaultSubobject<UDynamicMeshComponent>(TEXT("DynamicMeshComponent"));
 	DynamicMeshComponent->SetMobility(EComponentMobility::Movable);
 	DynamicMeshComponent->SetGenerateOverlapEvents(false);

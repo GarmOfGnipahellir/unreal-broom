@@ -2,11 +2,13 @@
 
 #include "UnrealBroomToolkit.h"
 #include "EditorModeManager.h"
+#include "UnrealBroomEdMode.h"
 
 #define LOCTEXT_NAMESPACE "UnrealBroomEditorModeToolkit"
 
 FUnrealBroomToolkit::FUnrealBroomToolkit()
 {
+	SAssignNew(UnrealBroomEdModeWidget, SUnrealBroomEdModeWidget);
 }
 
 void FUnrealBroomToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost, TWeakObjectPtr<UEdMode> InOwningMode)
@@ -28,6 +30,16 @@ FName FUnrealBroomToolkit::GetToolkitFName() const
 FText FUnrealBroomToolkit::GetBaseToolkitName() const
 {
 	return LOCTEXT("DisplayName", "UnrealBroomEditorMode Toolkit");
+}
+
+FEdMode* FUnrealBroomToolkit::GetEditorMode() const
+{
+	return GLevelEditorModeTools().GetActiveMode(FUnrealBroomEdMode::EM_UnrealBroom);
+}
+
+TSharedPtr<SWidget> FUnrealBroomToolkit::GetInlineContent() const
+{
+	return UnrealBroomEdModeWidget;
 }
 
 #undef LOCTEXT_NAMESPACE

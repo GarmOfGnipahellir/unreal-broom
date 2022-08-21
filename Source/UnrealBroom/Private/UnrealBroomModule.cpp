@@ -1,19 +1,27 @@
 // Copyright Henrik Melsom. All Rights Reserved.
 
 #include "UnrealBroomModule.h"
-#include "UnrealBroomCommands.h"
+
+#include "EditorModeRegistry.h"
+#include "UnrealBroomEdMode.h"
 
 class FUnrealBroomModule : public IUnrealBroomModule
 {
 public:
 	virtual void StartupModule() override
 	{
-		FUnrealBroomCommands::Register();
+		FEditorModeRegistry::Get().RegisterMode<FUnrealBroomEdMode>(
+			FUnrealBroomEdMode::EM_UnrealBroom,
+			FText::FromString("Unreal Broom"),
+			FSlateIcon(),
+			true,
+			100
+		);
 	}
 
 	virtual void ShutdownModule() override
 	{
-		FUnrealBroomCommands::Unregister();
+		FEditorModeRegistry::Get().UnregisterMode(FUnrealBroomEdMode::EM_UnrealBroom);
 	}
 };
 

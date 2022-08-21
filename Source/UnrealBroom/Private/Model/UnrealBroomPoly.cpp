@@ -1,20 +1,20 @@
 ﻿// Copyright Arctic Beard Studios. All Rights Reserved.
 
 
-#include "Model/Poly.h"
+#include "Model/UnrealBroomPoly.h"
 
 #include "DynamicMesh/DynamicMesh3.h"
-#include "Model/Face.h"
+#include "Model/UnrealBroomFace.h"
 
-void FPoly::CreateVert(const FVector Location, const FFace Face)
+void FUnrealBroomPoly::CreateVert(const FVector Location, const UUnrealBroomFace* Face)
 {
-	FVert Vert;
+	FUnrealBroomVert Vert;
 	Vert.Location = Location;
-	Vert.Normal = Face.Normal;
+	Vert.Normal = Face->Normal;
 	Verts.Add(Vert);
 }
 
-void FPoly::OrderVerts()
+void FUnrealBroomPoly::OrderVerts()
 {
 	if (Verts.Num() < 3)
 	{

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Model/Entity.h"
+#include "Model/UnrealBroomEntity.h"
 #include "UnrealBroomActor.generated.h"
 
 class UDynamicMeshComponent;
@@ -15,7 +15,8 @@ class UNREALBROOM_API AUnrealBroomActor : public AActor
 	GENERATED_BODY()
 
 public:
-	FEntity Entity;
+	UPROPERTY()
+	UUnrealBroomEntity* Entity;
 
 	UPROPERTY(Category=UnrealBroomActor, VisibleAnywhere, BlueprintReadOnly)
 	UDynamicMeshComponent* DynamicMeshComponent;
