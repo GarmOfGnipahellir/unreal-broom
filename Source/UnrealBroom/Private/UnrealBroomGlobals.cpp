@@ -24,7 +24,7 @@ AUnrealBroomActor* UUnrealBroomGlobals::GetOrCreateWorldData(UWorld* World)
 		return Actor;
 	}
 	AUnrealBroomActor* Actor = World->SpawnActor<AUnrealBroomActor>();
-	Actor->Entity->Brushes.Add(UUnrealBroomBrush::CreateBox(FVector::ZeroVector, FVector::OneVector * 100.0));
+	Actor->Entity->AddBrush(UUnrealBroomBrush::CreateBox(FVector::ZeroVector, FVector::OneVector * 100.0));
 	Actor->DynamicMeshComponent->SetMesh(Actor->Entity->GetDynamicMesh());
 	return Actor;
 }

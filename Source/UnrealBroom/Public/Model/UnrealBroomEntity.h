@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UnrealBroomHitResult.h"
 #include "UnrealBroomEntity.generated.h"
 
 namespace UE::Geometry
@@ -21,9 +22,16 @@ public:
 	UPROPERTY()
 	TArray<UUnrealBroomBrush*> Brushes;
 
+	void AddBrush(UUnrealBroomBrush* Brush);
+
 	/**
 	 * @brief Computes a triangulated dynamic mesh from brush faces.
 	 * @return Computed dynamic mesh
 	 */
 	UE::Geometry::FDynamicMesh3 GetDynamicMesh();
+
+	TOptional<TUnrealBroomHit<UUnrealBroomEntity>> IntersectsLine(
+		FVector Start,
+		FVector End,
+		FUnrealBroomHitResult& Result);
 };

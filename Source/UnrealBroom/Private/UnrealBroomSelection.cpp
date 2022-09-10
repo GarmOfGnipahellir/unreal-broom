@@ -17,6 +17,9 @@ void UUnrealBroomSelection::Select(UUnrealBroomFace* Face)
 {
 	if (!IsSelected(Face))
 	{
+		const FScopedTransaction Transaction(FText::FromString("Select Face"));
+		Modify();
+
 		Faces.Add(Face);
 	}
 }
@@ -25,6 +28,9 @@ void UUnrealBroomSelection::Deselect(UUnrealBroomBrush* Brush)
 {
 	if (IsSelected(Brush))
 	{
+		const FScopedTransaction Transaction(FText::FromString("Deselect Brush"));
+		Modify();
+
 		Brushes.Remove(Brush);
 	}
 }
@@ -33,6 +39,9 @@ void UUnrealBroomSelection::Deselect(UUnrealBroomFace* Face)
 {
 	if (IsSelected(Face))
 	{
+		const FScopedTransaction Transaction(FText::FromString("Deselect Face"));
+		Modify();
+
 		Faces.Remove(Face);
 	}
 }

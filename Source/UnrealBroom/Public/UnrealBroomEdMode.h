@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EdMode.h"
 #include "UnrealBroomActor.h"
+#include "UnrealBroomHitResult.h"
 #include "UnrealBroomSelection.h"
 
 /**
@@ -41,6 +42,5 @@ public:
 
 	// End FEdMode interface
 
-	template <typename T>
-	bool MouseTrace(FEditorViewportClient* ViewportClient, T*& OutTarget);
+	TOptional<FUnrealBroomHitResult> MouseTrace(FEditorViewportClient* ViewportClient);
 };

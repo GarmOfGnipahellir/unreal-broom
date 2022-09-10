@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UnrealBroomHitResult.h"
 #include "UnrealBroomFace.generated.h"
+
+class UUnrealBroomBrush;
 
 UCLASS()
 class UUnrealBroomFace : public UObject
@@ -11,6 +14,9 @@ class UUnrealBroomFace : public UObject
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+	UUnrealBroomBrush* Brush;
+
 	UPROPERTY()
 	FVector Location;
 
@@ -24,5 +30,5 @@ public:
 		const UUnrealBroomFace* Face1,
 		const UUnrealBroomFace* Face2);
 
-	bool IntersectsLine(FVector Start, FVector End, FVector& OutPoint) const;
+	TOptional<FUnrealBroomHitFace> IntersectsLine(FVector Start, FVector End, FUnrealBroomHitResult& Result);
 };

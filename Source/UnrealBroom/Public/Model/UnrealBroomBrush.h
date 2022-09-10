@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UnrealBroomHitResult.h"
 #include "UnrealBroomBrush.generated.h"
 
+class UUnrealBroomEntity;
 class FUnrealBroomPoly;
 class UUnrealBroomFace;
 
@@ -14,6 +16,9 @@ class UUnrealBroomBrush : public UObject
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+	UUnrealBroomEntity* Entity;
+
 	UPROPERTY()
 	TArray<UUnrealBroomFace*> Faces;
 
@@ -25,6 +30,8 @@ public:
 	 */
 	static UUnrealBroomBrush* CreateBox(const FVector Location, const FVector Extent);
 
+	void AddFace(const FVector Location, const FVector Normal);
+
 	/**
 	 * @brief Computes the polygons making up this brush, and returns them.
 	 * @return Array of polygons
@@ -33,5 +40,5 @@ public:
 
 	bool ContainsPoint(FVector Point) const;
 
-	bool IntersectsLine(FVector Start, FVector End) const;
+	TOptional<FUnrealBroomHitBrush> IntersectsLine(FVector Start, FVector End, FUnrealBroomHitResult& Result);
 };

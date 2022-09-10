@@ -7,6 +7,12 @@
 #include "Model/UnrealBroomBrush.h"
 #include "Model/UnrealBroomPoly.h"
 
+void UUnrealBroomEntity::AddBrush(UUnrealBroomBrush* Brush)
+{
+	Brush->Entity = this;
+	Brushes.Add(Brush);
+}
+
 UE::Geometry::FDynamicMesh3 UUnrealBroomEntity::GetDynamicMesh()
 {
 	UE::Geometry::FDynamicMesh3 Result = UE::Geometry::FDynamicMesh3(true, false, false, false);
@@ -33,4 +39,28 @@ UE::Geometry::FDynamicMesh3 UUnrealBroomEntity::GetDynamicMesh()
 	}
 
 	return Result;
+}
+
+TOptional<FUnrealBroomHitEntity> UUnrealBroomEntity::IntersectsLine(
+	FVector Start,
+	FVector End,
+	FUnrealBroomHitResult& Result)
+{
+	TArray<FUnrealBroomHitEntity> HitsEntity;
+	for (const auto Brush : Brushes)
+	{
+		if (TOptional<FUnrealBroomHitFace> HitBrush = Brush->IntersectsLine(Start, End, Result))
+		{
+			HitsEntity.Add(FUnrealBroomHitEntity(*HitBrush, this));
+		}
+	}
+
+	if (!HitsEntity.IsEmpty())
+	{
+		HitsEntity.Sort();
+		Result.HitEntities.Add(HitsEntity[0]);
+		return HitsEntity[0];
+	}
+
+	return TOptional<FUnrealBroomHitEntity>();
 }

@@ -4,6 +4,8 @@
 #include "Model/UnrealBroomFace.h"
 
 #include "MatrixTypes.h"
+#include "UnrealBroomHitResult.h"
+#include "UnrealBroomModule.h"
 
 UUnrealBroomFace* UUnrealBroomFace::Create(const FVector Location, const FVector Normal)
 {
@@ -40,14 +42,20 @@ TOptional<FVector> UUnrealBroomFace::IntersectPoint(
 	return TOptional(FMath::Pow(Det, -1.0) * (v1 + v2 + v3));
 }
 
-bool UUnrealBroomFace::IntersectsLine(FVector Start, FVector End, FVector& OutPoint) const
+TOptional<FUnrealBroomHitFace> UUnrealBroomFace::IntersectsLine(
+	FVector Start,
+	FVector End,
+	FUnrealBroomHitResult& Result)
 {
 	FVector Delta = End - Start;
 	double Det = Normal.Dot(-Delta);
 
-	if (Det == 0.0) return false;
+	if (Det == 0.0) return TOptional<TUnrealBroomHit<UUnrealBroomFace>>();
 
 	double Time = Normal.Dot(Start - Location) / Det;
-	OutPoint = Start + Delta * Time;
-	return true;
+	FVector Point = Start + Delta * Time;
+
+	auto Hit = FUnrealBroomHitFace(Time, Point, this);
+	Result.HitFaces.Add(Hit);
+	return Hit;
 }

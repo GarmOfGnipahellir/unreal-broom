@@ -10,13 +10,22 @@
 UUnrealBroomBrush* UUnrealBroomBrush::CreateBox(const FVector Location, const FVector Extent)
 {
 	UUnrealBroomBrush* Result = NewObject<UUnrealBroomBrush>();
-	Result->Faces.Add(UUnrealBroomFace::Create(Location + FVector::XAxisVector * Extent.X, FVector::XAxisVector));
-	Result->Faces.Add(UUnrealBroomFace::Create(Location - FVector::XAxisVector * Extent.X, -FVector::XAxisVector));
-	Result->Faces.Add(UUnrealBroomFace::Create(Location + FVector::YAxisVector * Extent.Y, FVector::YAxisVector));
-	Result->Faces.Add(UUnrealBroomFace::Create(Location - FVector::YAxisVector * Extent.Y, -FVector::YAxisVector));
-	Result->Faces.Add(UUnrealBroomFace::Create(Location + FVector::ZAxisVector * Extent.Z, FVector::ZAxisVector));
-	Result->Faces.Add(UUnrealBroomFace::Create(Location - FVector::ZAxisVector * Extent.Z, -FVector::ZAxisVector));
+	Result->AddFace(Location + FVector::XAxisVector * Extent.X, FVector::XAxisVector);
+	Result->AddFace(Location - FVector::XAxisVector * Extent.X, -FVector::XAxisVector);
+	Result->AddFace(Location + FVector::YAxisVector * Extent.Y, FVector::YAxisVector);
+	Result->AddFace(Location - FVector::YAxisVector * Extent.Y, -FVector::YAxisVector);
+	Result->AddFace(Location + FVector::ZAxisVector * Extent.Z, FVector::ZAxisVector);
+	Result->AddFace(Location - FVector::ZAxisVector * Extent.Z, -FVector::ZAxisVector);
 	return Result;
+}
+
+void UUnrealBroomBrush::AddFace(const FVector Location, const FVector Normal)
+{
+	UUnrealBroomFace* NewFace = NewObject<UUnrealBroomFace>(this);
+	NewFace->Brush = this;
+	NewFace->Location = Location;
+	NewFace->Normal = Normal;
+	Faces.Add(NewFace);
 }
 
 TArray<FUnrealBroomPoly> UUnrealBroomBrush::GetPolys()
@@ -67,14 +76,27 @@ bool UUnrealBroomBrush::ContainsPoint(FVector Point) const
 	return true;
 }
 
-bool UUnrealBroomBrush::IntersectsLine(FVector Start, FVector End) const
+TOptional<FUnrealBroomHitBrush> UUnrealBroomBrush::IntersectsLine(
+	FVector Start,
+	FVector End,
+	FUnrealBroomHitResult& Result)
 {
+	TArray<FUnrealBroomHitBrush> HitsBrush;
 	for (const auto Face : Faces)
 	{
-		if (FVector Point; Face->IntersectsLine(Start, End, Point) && ContainsPoint(Point))
+		TOptional<FUnrealBroomHitFace> HitFace = Face->IntersectsLine(Start, End, Result);
+		if (HitFace && ContainsPoint(HitFace->Point))
 		{
-			return true;
+			HitsBrush.Add(FUnrealBroomHitBrush(*HitFace, this));
 		}
 	}
-	return false;
+
+	if (!HitsBrush.IsEmpty())
+	{
+		HitsBrush.Sort();
+		Result.HitBrushes.Add(HitsBrush[0]);
+		return HitsBrush[0];
+	}
+
+	return TOptional<FUnrealBroomHitBrush>();
 }

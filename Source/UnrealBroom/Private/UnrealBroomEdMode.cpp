@@ -58,40 +58,27 @@ void FUnrealBroomEdMode::Render(const FSceneView* View, FViewport* Viewport, FPr
 				}
 			}
 		}
-	}
 
-	/*
-	for (const auto Brush : WorldData->Entity.Brushes)
-	{
-		for (const auto Face : Brush->Faces)
+		for (int i = 0; i < Brush->Faces.Num(); ++i)
 		{
-			PDI->DrawPoint(Face->Location, FLinearColor::White, 16.0f, SDPG_World);
-			PDI->DrawLine(
-				Face->Location,
-				Face->Location + Face->Normal * 50.0f,
-				FLinearColor::White,
-				SDPG_World
-			);
-		}
-
-		for (const auto Poly : Brush->GetPolys())
-		{
-			for (int i = 1; i < Poly.Verts.Num(); ++i)
+			if (Selection->IsSelected(Brush->Faces[i]))
 			{
-				FPoly::FVert Vert0 = Poly.Verts[i - 1];
-				FPoly::FVert Vert1 = Poly.Verts[i];
+				FUnrealBroomPoly Poly = Brush->GetPolys()[i];
+				for (int j = 1; j < Poly.Verts.Num(); ++j)
+				{
+					FUnrealBroomVert Vert0 = Poly.Verts[j - 1];
+					FUnrealBroomVert Vert1 = Poly.Verts[j];
 
-				PDI->DrawPoint(Vert0.Location, FLinearColor::White, 16.0f, SDPG_World);
-				PDI->DrawLine(
-					Vert0.Location,
-					Vert1.Location,
-					FLinearColor::White,
-					SDPG_World
-				);
+					PDI->DrawLine(
+						Vert0.Location,
+						Vert1.Location,
+						FLinearColor::Yellow,
+						SDPG_Foreground
+					);
+				}
 			}
 		}
 	}
-	*/
 }
 
 bool FUnrealBroomEdMode::HandleClick(
@@ -99,14 +86,22 @@ bool FUnrealBroomEdMode::HandleClick(
 	HHitProxy* HitProxy,
 	const FViewportClick& Click)
 {
-	if (UUnrealBroomBrush* Brush; MouseTrace<UUnrealBroomBrush>(InViewportClient, Brush))
+	if (auto HitResult = MouseTrace(InViewportClient))
 	{
-		Selection->Select(Brush);
+		if (Click.IsShiftDown() && HitResult->GetFirstFace())
+		{
+			Selection->Select(HitResult->GetFirstFace()->Target);
+			return true;
+		}
+
+		if (HitResult->GetFirstBrush())
+		{
+			Selection->Select(HitResult->GetFirstBrush()->Target);
+			return true;
+		}
 	}
-	else
-	{
-		Selection->DeselectAll();
-	}
+	
+	Selection->DeselectAll();
 	return true;
 }
 
@@ -137,8 +132,7 @@ bool FUnrealBroomEdMode::DisallowMouseDeltaTracking() const
 	return false;
 }
 
-template <typename T>
-bool FUnrealBroomEdMode::MouseTrace(FEditorViewportClient* ViewportClient, T*& OutTarget)
+TOptional<FUnrealBroomHitResult> FUnrealBroomEdMode::MouseTrace(FEditorViewportClient* ViewportClient)
 {
 	FSceneViewFamilyContext ViewFamily(
 		FSceneViewFamilyContext::ConstructionValues(
@@ -162,17 +156,11 @@ bool FUnrealBroomEdMode::MouseTrace(FEditorViewportClient* ViewportClient, T*& O
 		Start -= MouseRay.GetDirection() * WORLD_MAX;
 	}
 
-	if (T::StaticClass() == UUnrealBroomBrush::StaticClass())
+	FUnrealBroomHitResult Result;
+	if (auto Hit = WorldData->Entity->IntersectsLine(Start, End, Result))
 	{
-		for (const auto Brush : WorldData->Entity->Brushes)
-		{
-			if (Brush->IntersectsLine(Start, End))
-			{
-				OutTarget = Brush;
-				return true;
-			}
-		}
+		return Result;
 	}
 
-	return false;
+	return TOptional<FUnrealBroomHitResult>();
 }
