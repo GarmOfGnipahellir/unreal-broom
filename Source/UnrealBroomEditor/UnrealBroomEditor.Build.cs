@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class UnrealBroom : ModuleRules
+public class UnrealBroomEditor : ModuleRules
 {
-	public UnrealBroom(ReadOnlyTargetRules Target) : base(Target)
+	public UnrealBroomEditor(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -27,7 +27,7 @@ public class UnrealBroom : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core", "GeometryCore", "GeometryFramework", "MeshDescription", "StaticMeshDescription",
+				"Core", "GeometryCore", "GeometryFramework", "UnrealBroom",
 				// ... add other public dependencies that you statically link with here ...
 			}
 		);
@@ -41,6 +41,12 @@ public class UnrealBroom : ModuleRules
 				"Slate",
 				"SlateCore",
 				"InputCore",
+				"EditorFramework",
+				"EditorStyle",
+				"UnrealEd",
+				"LevelEditor",
+				"InteractiveToolsFramework",
+				"EditorInteractiveToolsFramework",
 				// ... add private dependencies that you statically link with here ...	
 			}
 		);

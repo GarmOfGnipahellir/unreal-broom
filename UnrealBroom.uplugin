@@ -17,6 +17,11 @@
 	"Modules": [
 		{
 			"Name": "UnrealBroom",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UnrealBroomEditor",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}
